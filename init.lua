@@ -632,10 +632,6 @@ require("lazy").setup({
 				--
 				-- But for many setups, the LSP (`ts_ls`) will work just fine
 				-- ts_ls = {},
-				ts_ls = {},
-				eslint = {},
-				clojure_lsp = {},
-				svelte = {},
 			}
 
 			-- Ensure the servers and tools above are installed
@@ -652,6 +648,10 @@ require("lazy").setup({
 				"prettierd", -- JS/TS/Svelte formatter
 				"eslint_d", -- JS/TS linter
 				"cljfmt", -- Clojure formatter
+				"clojure-lsp", -- Clojure LSP
+				"svelte-language-server", -- Svelte LSP
+				"typescript-language-server", -- JS/TS LSP
+				"eslint-lsp", -- ESLint LSP
 			})
 
 			require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
@@ -661,6 +661,10 @@ require("lazy").setup({
 				vim.lsp.config(name, server)
 				vim.lsp.enable(name)
 			end
+			vim.lsp.enable("clojure_lsp")
+			vim.lsp.enable("svelte")
+			vim.lsp.enable("ts_ls")
+			vim.lsp.enable("eslint")
 
 			-- Special Lua Config, as recommended by neovim help docs
 			vim.lsp.config("lua-language-server", {
