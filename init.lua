@@ -132,7 +132,7 @@ vim.o.smartcase = true
 vim.o.signcolumn = "yes"
 
 -- Decrease update time
-vim.o.updatetime = 250
+vim.o.updatetime = 50
 
 -- Decrease mapped sequence wait time
 vim.o.timeoutlen = 300
@@ -165,6 +165,14 @@ vim.o.scrolloff = 10
 -- instead raise a dialog asking if you wish to save the current file(s)
 -- See `:help 'confirm'`
 vim.o.confirm = true
+
+-- No swap or backup files (use persistent undo instead)
+vim.o.swapfile = false
+vim.o.backup = false
+vim.opt.undodir = os.getenv("HOME") .. "/.vim/undo-dir"
+
+-- Visual column guide at 100 characters
+vim.o.colorcolumn = "100"
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -883,21 +891,6 @@ require("lazy").setup({
 			-- - sr)'  - [S]urround [R]eplace [)] [']
 			require("mini.surround").setup()
 
-			-- Simple and easy statusline.
-			--  You could remove this setup call if you don't like it,
-			--  and try some other statusline plugin
-			local statusline = require("mini.statusline")
-			-- set use_icons to true if you have a Nerd Font
-			statusline.setup({ use_icons = vim.g.have_nerd_font })
-
-			-- You can configure sections in the statusline by overriding their
-			-- default behavior. For example, here we set the section for
-			-- cursor location to LINE:COLUMN
-			---@diagnostic disable-next-line: duplicate-set-field
-			statusline.section_location = function()
-				return "%2l:%-2v"
-			end
-
 			-- ... and there is more!
 			--  Check out: https://github.com/nvim-mini/mini.nvim
 		end,
@@ -949,6 +942,95 @@ require("lazy").setup({
 	-- require 'kickstart.plugins.autopairs',
 	-- require 'kickstart.plugins.neo-tree',
 	-- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+
+	-- Autopairs
+	{
+		"windwp/nvim-autopairs",
+		event = "InsertEnter",
+		config = true,
+	},
+
+	-- LazyGit
+	{
+		"kdheepak/lazygit.nvim",
+		lazy = true,
+		cmd = "LazyGit",
+		config = function()
+			vim.keymap.set("n", "<leader>g", ":LazyGit<CR>", { noremap = true, silent = true, desc = "[G]it LazyGit" })
+		end,
+	},
+
+	-- Lualine statusline
+	{
+		"nvim-lualine/lualine.nvim",
+		dependencies = { "nvim-tree/nvim-web-devicons" },
+		config = function()
+			require("lualine").setup({
+				options = {
+					theme = "tokyonight",
+					section_separators = "",
+					component_separators = "",
+				},
+				sections = {
+					lualine_a = { "mode" },
+					lualine_b = { "branch" },
+					lualine_c = { { "filename", path = 1 } },
+					lualine_x = { "encoding", "fileformat", "filetype" },
+					lualine_y = { "progress" },
+					lualine_z = { "location" },
+				},
+			})
+		end,
+	},
+
+	-- GitHub Copilot
+	{
+		"zbirenbaum/copilot.lua",
+		cmd = "Copilot",
+		event = "InsertEnter",
+		config = function()
+			require("copilot").setup({
+				suggestion = {
+					enabled = true,
+					auto_trigger = false,
+					keymap = {
+						accept = "<C-l>",
+						next = "<C-]>",
+						prev = "<C-[>",
+						dismiss = "<C-x>",
+					},
+				},
+				panel = { enabled = false },
+				filetypes = {
+					yaml = false,
+					markdown = false,
+					gitcommit = false,
+					gitrebase = false,
+				},
+			})
+		end,
+	},
+
+	-- Clojure: REPL with Conjure
+	{
+		"Olical/conjure",
+		dependencies = { "Olical/nfnl" },
+		ft = { "clojure" },
+		config = function()
+			vim.keymap.set("n", "<leader>ee", ":ConjureEval<CR>", { noremap = true, silent = true, desc = "[E]val expression" })
+		end,
+	},
+
+	-- Clojure: structural editing
+	{ "guns/vim-sexp", ft = { "clojure" } },
+	{
+		"tpope/vim-sexp-mappings-for-regular-people",
+		ft = { "clojure" },
+		dependencies = { "guns/vim-sexp" },
+	},
+
+	-- Clojure: parinfer (auto-manage parens)
+	{ "gpanders/nvim-parinfer" },
 
 	-- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
 	--    This is the easiest way to modularize your config.
