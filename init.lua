@@ -1,5 +1,6 @@
 -- Leader
 vim.g.mapleader = " "
+vim.g.maplocalleader = ","
 
 -- Basic settings
 vim.opt.number = true
@@ -38,6 +39,12 @@ require("lazy").setup({
         "javascript",
         "typescript",
         "tsx",
+	"python",
+	"markdown",
+	"bash",
+	"yaml",
+	"html",
+	"css"
       },
       highlight = { enable = true },
     },
