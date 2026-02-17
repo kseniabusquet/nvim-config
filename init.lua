@@ -953,11 +953,10 @@ require("lazy").setup({
 	-- LazyGit
 	{
 		"kdheepak/lazygit.nvim",
-		lazy = true,
 		cmd = "LazyGit",
-		config = function()
-			vim.keymap.set("n", "<leader>g", ":LazyGit<CR>", { noremap = true, silent = true, desc = "[G]it LazyGit" })
-		end,
+		keys = {
+			{ "<leader>g", ":LazyGit<CR>", desc = "[G]it LazyGit" },
+		},
 	},
 
 	-- Lualine statusline
