@@ -260,6 +260,7 @@ rtp:prepend(lazypath)
 --    :Lazy update
 --
 -- NOTE: Here is where you install your plugins.
+vim.opt.runtimepath:append(vim.fn.stdpath("data") .. "/site")
 require("lazy").setup({
 	-- NOTE: Plugins can be added via a link or github org/name. To run setup automatically, use `opts = {}`
 	{ "NMAC427/guess-indent.nvim", opts = {} },
@@ -631,6 +632,10 @@ require("lazy").setup({
 				--
 				-- But for many setups, the LSP (`ts_ls`) will work just fine
 				-- ts_ls = {},
+				ts_ls = {},
+				eslint = {},
+				clojure_lsp = {},
+				svelte = {},
 			}
 
 			-- Ensure the servers and tools above are installed
@@ -644,7 +649,9 @@ require("lazy").setup({
 			vim.list_extend(ensure_installed, {
 				"lua-language-server", -- Lua Language server
 				"stylua", -- Used to format Lua code
-				-- You can add other tools here that you want Mason to install
+				"prettierd", -- JS/TS/Svelte formatter
+				"eslint_d", -- JS/TS linter
+				"cljfmt", -- Clojure formatter
 			})
 
 			require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
@@ -721,11 +728,10 @@ require("lazy").setup({
 			end,
 			formatters_by_ft = {
 				lua = { "stylua" },
-				-- Conform can also run multiple formatters sequentially
-				-- python = { "isort", "black" },
-				--
-				-- You can use 'stop_after_first' to run the first available formatter from the list
-				-- javascript = { "prettierd", "prettier", stop_after_first = true },
+				javascript = { "prettierd" },
+				typescript = { "prettierd" },
+				svelte = { "prettierd" },
+				clojure = { "cljfmt" },
 			},
 		},
 	},
@@ -895,17 +901,22 @@ require("lazy").setup({
 
 	{ -- Highlight, edit, and navigate code
 		"nvim-treesitter/nvim-treesitter",
+		branch = "main",
 		config = function()
 			local filetypes = {
 				"bash",
 				"c",
+				"clojure",
 				"diff",
 				"html",
+				"javascript",
 				"lua",
 				"luadoc",
 				"markdown",
 				"markdown_inline",
 				"query",
+				"svelte",
+				"typescript",
 				"vim",
 				"vimdoc",
 			}
@@ -946,6 +957,7 @@ require("lazy").setup({
 	-- In normal mode type `<space>sh` then write `lazy.nvim-plugin`
 	-- you can continue same window with `<space>sr` which resumes last telescope search
 }, {
+	rocks = { enabled = false },
 	ui = {
 		-- If you are using a Nerd Font: set icons to an empty table which will use the
 		-- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
