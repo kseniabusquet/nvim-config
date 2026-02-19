@@ -961,6 +961,20 @@ require("lazy").setup({
 		config = true,
 	},
 
+	-- File tree
+	{
+		"nvim-neo-tree/neo-tree.nvim",
+		branch = "v3.x",
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"nvim-tree/nvim-web-devicons",
+			"MunifTanjim/nui.nvim",
+		},
+		keys = {
+			{ "<leader>n", ":Neotree toggle<CR>", desc = "Toggle file tree" },
+		},
+	},
+
 	-- LazyGit
 	{
 		"kdheepak/lazygit.nvim",
@@ -993,33 +1007,6 @@ require("lazy").setup({
 		end,
 	},
 
-	-- GitHub Copilot
-	{
-		"zbirenbaum/copilot.lua",
-		cmd = "Copilot",
-		event = "InsertEnter",
-		config = function()
-			require("copilot").setup({
-				suggestion = {
-					enabled = true,
-					auto_trigger = false,
-					keymap = {
-						accept = "<C-l>",
-						next = "<C-]>",
-						prev = "<C-[>",
-						dismiss = "<C-x>",
-					},
-				},
-				panel = { enabled = false },
-				filetypes = {
-					yaml = false,
-					markdown = false,
-					gitcommit = false,
-					gitrebase = false,
-				},
-			})
-		end,
-	},
 
 	-- Clojure: REPL with Conjure
 	{
@@ -1032,15 +1019,18 @@ require("lazy").setup({
 	},
 
 	-- Clojure: structural editing
-	{ "guns/vim-sexp", ft = { "clojure" } },
+	{
+		"guns/vim-sexp",
+		ft = { "clojure" },
+		init = function()
+			vim.g.sexp_enable_insert_mode_mappings = 0
+		end,
+	},
 	{
 		"tpope/vim-sexp-mappings-for-regular-people",
 		ft = { "clojure" },
 		dependencies = { "guns/vim-sexp" },
 	},
-
-	-- Clojure: parinfer (auto-manage parens)
-	{ "gpanders/nvim-parinfer" },
 
 	-- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
 	--    This is the easiest way to modularize your config.
