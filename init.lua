@@ -89,6 +89,9 @@ P.S. You can delete this when you're done too. It's your config now! :)
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
+vim.g.loaded_node_provider = 0
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_perl_provider = 0
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = false
@@ -171,8 +174,6 @@ vim.o.swapfile = false
 vim.o.backup = false
 vim.opt.undodir = os.getenv("HOME") .. "/.vim/undo-dir"
 
--- Visual column guide at 100 characters
-vim.o.colorcolumn = "100"
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -406,14 +407,11 @@ require("lazy").setup({
 			-- [[ Configure Telescope ]]
 			-- See `:help telescope` and `:help telescope.setup()`
 			require("telescope").setup({
-				-- You can put your default mappings / updates / etc. in here
-				--  All the info you're looking for is in `:help telescope.setup()`
-				--
-				-- defaults = {
-				--   mappings = {
-				--     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-				--   },
-				-- },
+				defaults = {
+					mappings = {
+						i = { ["<CR>"] = require("telescope.actions").select_default },
+					},
+				},
 				-- pickers = {}
 				extensions = {
 					["ui-select"] = { require("telescope.themes").get_dropdown() },
@@ -1013,6 +1011,10 @@ require("lazy").setup({
 		"Olical/conjure",
 		dependencies = { "Olical/nfnl" },
 		ft = { "clojure" },
+		init = function()
+			-- Use "," as Conjure's mapping prefix so it doesn't conflict with <leader>s* (Telescope)
+			vim.g["conjure#mapping#prefix"] = ","
+		end,
 		config = function()
 			vim.keymap.set("n", "<leader>ee", ":ConjureEval<CR>", { noremap = true, silent = true, desc = "[E]val expression" })
 		end,
