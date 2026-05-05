@@ -47,7 +47,16 @@ require("lazy").setup({
     "MunifTanjim/nui.nvim",
   },
   config = function()
-    require("neo-tree").setup({})
+    require("neo-tree").setup({
+      filesystem = {
+        filtered_items = {
+          visible = true,
+          hide_dotfiles = false,
+          hide_gitignored = false,
+          hide_hidden = false,
+        },
+      },
+    })
     vim.keymap.set("n", "<leader>nt", ":Neotree toggle<CR>")
   end,
 },
@@ -108,9 +117,6 @@ require("lazy").setup({
   { "hrsh7th/cmp-buffer" },
   { "hrsh7th/cmp-path" },
   { "L3MON4D3/LuaSnip" },
-
-  -- Clojure REPL (VERY IMPORTANT)
-  { "Olical/conjure" },
 
   -- Formatting
   { "stevearc/conform.nvim" },
