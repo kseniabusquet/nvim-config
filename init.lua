@@ -343,6 +343,7 @@ require("lazy").setup({
 				{ "<leader>s", group = "[s]earch", mode = { "n", "v" } },
 				{ "<leader>t", group = "[t]oggle" },
 				{ "<leader>h", group = "git [h]unk", mode = { "n", "v" } },
+				{ "<leader>p", group = "[p]roject" },
 			},
 		},
 	},
@@ -1076,12 +1077,56 @@ require("lazy").setup({
 	--    this is the easiest way to modularize your config.
 	--
 	--  uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-	-- { import = 'custom.plugins' },
+	{ import = "custom.plugins" },
 	--
 	-- for additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
 	-- or use telescope!
 	-- in normal mode type `<space>sh` then write `lazy.nvim-plugin`
 	-- you can continue same window with `<space>sr` which resumes last telescope search
+
+	{ -- per-directory session auto-save/restore
+		"folke/persistence.nvim",
+		event = "BufReadPre",
+		opts = {},
+		keys = {
+			{ "<leader>ps", function() require("persistence").load() end, desc = "[p]roject [s]ession restore (cwd)" },
+			{ "<leader>pl", function() require("persistence").load({ last = true }) end, desc = "[p]roject [l]ast session" },
+			{ "<leader>pd", function() require("persistence").stop() end, desc = "[p]roject [d]on't save on exit" },
+		},
+	},
+
+	{ -- project picker over ~/repos/*; loads session on switch
+		"nvim-telescope/telescope-project.nvim",
+		dependencies = { "nvim-telescope/telescope.nvim" },
+		keys = {
+			{
+				"<leader>pp",
+				function()
+					require("telescope").extensions.project.project({
+						display_type = "full",
+					})
+				end,
+				desc = "[p]roject [p]icker",
+			},
+		},
+		config = function()
+			require("telescope").setup({
+				extensions = {
+					project = {
+						base_dirs = { { path = "~/repos", max_depth = 2 } },
+						hidden_files = false,
+						order_by = "recent",
+						-- on enter: cd to project, then try restoring its session
+						on_project_selected = function(prompt_bufnr)
+							require("telescope._extensions.project.actions").change_working_directory(prompt_bufnr, false)
+							require("persistence").load()
+						end,
+					},
+				},
+			})
+			require("telescope").load_extension("project")
+		end,
+	},
 }, {
 	rocks = { enabled = false },
 	ui = {
