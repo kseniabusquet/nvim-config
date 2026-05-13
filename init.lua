@@ -988,11 +988,11 @@ require("lazy").setup({
 		},
 		keys = {
 			{
-				"<leader>p",
+				"<leader>ip",
 				function()
 					require("img-clip").paste_image()
 				end,
-				desc = "Paste image from clipboard",
+				desc = "[i]mage [p]aste from clipboard",
 			},
 		},
 	},
