@@ -175,6 +175,11 @@ vim.o.backup = false
 -- vim.opt.undodir = os.getenv("home") .. "/.vim/undo-dir"
 vim.opt.undodir = vim.fn.expand("~/.vim/undo-dir")
 
+-- treesitter-based folding (use za/zo/zc/zR/zM to fold)
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.opt.foldenable = false
+
 -- [[ basic keymaps ]]
 --  see `:help vim.keymap.set()`
 
